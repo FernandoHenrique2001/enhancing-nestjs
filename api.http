@@ -1,0 +1,38 @@
+@baseUrl = http://localhost:3000
+@authToken = {{{{authenticate.response.body.accessToken}}}}
+
+
+### Create account
+POST {{baseUrl}}/accounts
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "johndoe@gmail.com",
+    "password": "123456"
+}
+
+### authenticate
+
+# @name authenticate
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+    "email": "johndoe@gmail.com",
+    "password": "123456"
+}
+
+### questions
+POST {{baseUrl}}/questions
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZjBkYjYyNi1jMWQ2LTQ0ODctODRkMy1mNWQ4ZDRiODcxMDkiLCJpYXQiOjE3MDYwMzk2MDl9.PBgHMuIDTTv5VwVpj-15x4TeWcaz1_AuWxXTd-iEpMFYn2kLptjxJQJOSTnTYzZ8-C_utZ0QWlmxaT0Y17KfSeCO-VCTZtwHq1Zm7oUEYE-93zgfjvoZkZKs3w7IcdWyIxP6yvhRPWwRuoOLxwGS0vblV94pb5NwCNN-yySlZirVw51L5gTSrVjUmXMq45vRtUOK1MIjx5YGWfViq8ul0YusBYdvtva8pqr3lmBnq1ldNjc_L8jA2tmMOxBECKFMFlwmPHYGPlm2VT371kI1FQ9SSNF01V8sTlUuOae3tg4LPeuXoHTwm-VOUlpCGa7idKizcZTe_Jxvo0DMUlstKQ
+
+{
+    "title": "New question 3",
+    "content": "New content"
+}
+
+### get questions
+GET {{baseUrl}}/questions
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZjBkYjYyNi1jMWQ2LTQ0ODctODRkMy1mNWQ4ZDRiODcxMDkiLCJpYXQiOjE3MDYwMzk2MDl9.PBgHMuIDTTv5VwVpj-15x4TeWcaz1_AuWxXTd-iEpMFYn2kLptjxJQJOSTnTYzZ8-C_utZ0QWlmxaT0Y17KfSeCO-VCTZtwHq1Zm7oUEYE-93zgfjvoZkZKs3w7IcdWyIxP6yvhRPWwRuoOLxwGS0vblV94pb5NwCNN-yySlZirVw51L5gTSrVjUmXMq45vRtUOK1MIjx5YGWfViq8ul0YusBYdvtva8pqr3lmBnq1ldNjc_L8jA2tmMOxBECKFMFlwmPHYGPlm2VT371kI1FQ9SSNF01V8sTlUuOae3tg4LPeuXoHTwm-VOUlpCGa7idKizcZTe_Jxvo0DMUlstKQ
