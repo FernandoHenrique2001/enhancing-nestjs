@@ -7,8 +7,8 @@ POST {{baseUrl}}/accounts
 Content-Type: application/json
 
 {
-    "name": "John Doe",
-    "email": "johndoe@gmail.com",
+    "name": "John Doe5",
+    "email": "johndoe5@gmail.com",
     "password": "123456"
 }
 
@@ -26,13 +26,13 @@ Content-Type: application/json
 ### questions
 POST {{baseUrl}}/questions
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZjBkYjYyNi1jMWQ2LTQ0ODctODRkMy1mNWQ4ZDRiODcxMDkiLCJpYXQiOjE3MDYwMzk2MDl9.PBgHMuIDTTv5VwVpj-15x4TeWcaz1_AuWxXTd-iEpMFYn2kLptjxJQJOSTnTYzZ8-C_utZ0QWlmxaT0Y17KfSeCO-VCTZtwHq1Zm7oUEYE-93zgfjvoZkZKs3w7IcdWyIxP6yvhRPWwRuoOLxwGS0vblV94pb5NwCNN-yySlZirVw51L5gTSrVjUmXMq45vRtUOK1MIjx5YGWfViq8ul0YusBYdvtva8pqr3lmBnq1ldNjc_L8jA2tmMOxBECKFMFlwmPHYGPlm2VT371kI1FQ9SSNF01V8sTlUuOae3tg4LPeuXoHTwm-VOUlpCGa7idKizcZTe_Jxvo0DMUlstKQ
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmYWUzZmRhOS01N2ViLTQxN2UtYjVkNi0yYzUyZWExNDgwMmUiLCJpYXQiOjE3MDYzNzkyODB9.RWCFxTq3zfX0FCfebIYAiqrssJldSPieqT3mHa4sOqRf3M_pt3Rs8faEcdQDMgkpTrPWEBJTM-uy_Vucw3se2qi4Sy8P4Tqf2ACv5FhsTefaQFPMTIqBHS-hC3ga_wyoMXB46V53nw6d7jF9Pmbg9YcGcJQlw5SlvfrYLkawq86Zk7TCttARyzVlzC6y7PYwAr7qqDtK5NacOF4kbBzcqTeDsjCi7v8doaWR1G9n3-mocWFmw_-4M3-me3ajCiM1hrIY1syt6Wyk805qzzrbHycW05LMr3GSWdXinGP1LtDYcl-7cKZrqSJns88E6KRZKw6cBWZWIUlaJS0ky0J0Vg
 
 {
-    "title": "New question 3",
+    "title": "New question 1",
     "content": "New content"
 }
 
 ### get questions
-GET {{baseUrl}}/questions
+GET {{baseUrl}}/questions?page=1
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZjBkYjYyNi1jMWQ2LTQ0ODctODRkMy1mNWQ4ZDRiODcxMDkiLCJpYXQiOjE3MDYwMzk2MDl9.PBgHMuIDTTv5VwVpj-15x4TeWcaz1_AuWxXTd-iEpMFYn2kLptjxJQJOSTnTYzZ8-C_utZ0QWlmxaT0Y17KfSeCO-VCTZtwHq1Zm7oUEYE-93zgfjvoZkZKs3w7IcdWyIxP6yvhRPWwRuoOLxwGS0vblV94pb5NwCNN-yySlZirVw51L5gTSrVjUmXMq45vRtUOK1MIjx5YGWfViq8ul0YusBYdvtva8pqr3lmBnq1ldNjc_L8jA2tmMOxBECKFMFlwmPHYGPlm2VT371kI1FQ9SSNF01V8sTlUuOae3tg4LPeuXoHTwm-VOUlpCGa7idKizcZTe_Jxvo0DMUlstKQ
