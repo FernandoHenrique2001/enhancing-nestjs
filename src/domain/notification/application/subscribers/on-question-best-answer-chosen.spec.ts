@@ -1,42 +1,69 @@
-import { DomainEvents } from "@/core/events/domain-events";
-import { EventHandler } from "@/core/events/event-handler";
-import { AnswersRepository } from "@/domain/forum/application/repositories/answers-repository";
-import { QuestionBestAnswerChosenEvent } from "@/domain/forum/enterprise/events/question-best-answer-chosen-event";
-import { SendNotificationUseCase } from "@/domain/notification/application/use-cases/send-notification";
-import { Injectable } from "@nestjs/common";
+import { makeAnswer } from "test/factories/make-answer";
+import { InMemoryAnswerAttachmentsRepository } from "test/repositories/in-memory-answer-attachments-repository";
+import { InMemoryAnswersRepository } from "test/repositories/in-memory-answers-repository";
+import { InMemoryQuestionAttachmentsRepository } from "test/repositories/in-memory-question-attachments-repository";
+import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository";
+import {
+  SendNotificationUseCase,
+  SendNotificationUseCaseRequest,
+  SendNotificationUseCaseResponse,
+} from "../use-cases/send-notification";
+import { InMemoryNotificationsRepository } from "test/repositories/in-memory-notifications-repository";
+import { makeQuestion } from "test/factories/make-question";
+import { SpyInstance } from "vitest";
+import { waitFor } from "test/utils/wait-for";
+import { OnQuestionBestAnswerChosen } from "@/domain/notification/application/subscribers/on-question-best-answer-chosen";
+import { InMemoryStudentsRepository } from "test/repositories/in-memory-students-repository";
+import { InMemoryAttachmentsRepository } from "test/repositories/in-memory-attachments-repository";
 
-@Injectable()
-export class OnQuestionBestAnswerChosen implements EventHandler {
-  constructor(
-    private answersRepository: AnswersRepository,
-    private sendNotification: SendNotificationUseCase
-  ) {
-    this.setupSubscriptions();
-  }
+let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
+let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
+let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
+let inMemoryAnswersRepository: InMemoryAnswersRepository;
+let inMemoryNotificationsRepository: InMemoryNotificationsRepository;
+let inMemoryStudentsRepository: InMemoryStudentsRepository;
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository;
+let sendNotificationUseCase: SendNotificationUseCase;
 
-  setupSubscriptions(): void {
-    DomainEvents.register(
-      this.sendQuestionBestAnswerNotification.bind(this),
-      QuestionBestAnswerChosenEvent.name
+let sendNotificationExecuteSpy: SpyInstance<
+  [SendNotificationUseCaseRequest],
+  Promise<SendNotificationUseCaseResponse>
+>;
+describe("On Question Best Answer Chosen", () => {
+  beforeEach(() => {
+    inMemoryQuestionAttachmentsRepository =
+      new InMemoryQuestionAttachmentsRepository();
+    inMemoryStudentsRepository = new InMemoryStudentsRepository();
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository();
+    inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
+      inMemoryQuestionAttachmentsRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryStudentsRepository
     );
-  }
-
-  private async sendQuestionBestAnswerNotification({
-    question,
-    bestAnswerId,
-  }: QuestionBestAnswerChosenEvent) {
-    const answer = await this.answersRepository.findById(
-      bestAnswerId.toString()
+    inMemoryAnswerAttachmentsRepository =
+      new InMemoryAnswerAttachmentsRepository();
+    inMemoryAnswersRepository = new InMemoryAnswersRepository(
+      inMemoryAnswerAttachmentsRepository
     );
-
-    if (answer) {
-      await this.sendNotification.execute({
-        recipientId: answer.authorId.toString(),
-        title: `Sua resposta foi escolhida!`,
-        content: `A resposta que você enviou em "${question.title
-          .substring(0, 20)
-          .concat("...")}" foi escolhida pelo autor!"`,
-      });
-    }
-  }
-}
+    inMemoryNotificationsRepository = new InMemoryNotificationsRepository();
+    sendNotificationUseCase = new SendNotificationUseCase(
+      inMemoryNotificationsRepository
+    );
+    sendNotificationExecuteSpy = vi.spyOn(sendNotificationUseCase, "execute");
+    new OnQuestionBestAnswerChosen(
+      inMemoryAnswersRepository,
+      sendNotificationUseCase
+    );
+  });
+  it("should send a notification when topic has new best answer chosen", async () => {
+    const question = makeQuestion();
+    const answer = makeAnswer({ questionId: question.id });
+    inMemoryQuestionsRepository.create(question);
+    inMemoryAnswersRepository.create(answer);
+    question.bestAnswerId = answer.id;
+    inMemoryQuestionsRepository.save(question);
+    await waitFor(() => {
+      expect(sendNotificationExecuteSpy).toHaveBeenCalled();
+    });
+  });
+});

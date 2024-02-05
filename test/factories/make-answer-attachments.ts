@@ -1,13 +1,15 @@
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { PrismaService } from "@/infra/database/prisma/prisma.service";
+import { Injectable } from "@nestjs/common";
 
 import {
   AnswerAttachment,
   AnswerAttachmentProps,
-} from '@/domain/forum/enterprise/entities/answer-attachment'
+} from "@/domain/forum/enterprise/entities/answer-attachment";
 
 export function makeAnswerAttachment(
   override: Partial<AnswerAttachmentProps> = {},
-  id?: UniqueEntityID,
+  id?: UniqueEntityID
 ) {
   const answerAttachment = AnswerAttachment.create(
     {
@@ -15,8 +17,30 @@ export function makeAnswerAttachment(
       attachmentId: new UniqueEntityID(),
       ...override,
     },
-    id,
-  )
+    id
+  );
 
-  return answerAttachment
+  return answerAttachment;
+}
+
+@Injectable()
+export class AnswerAttachmentFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaAnswerAttachment(
+    data: Partial<AnswerAttachmentProps> = {}
+  ): Promise<AnswerAttachment> {
+    const answerAttachment = makeAnswerAttachment(data);
+
+    await this.prisma.attachment.update({
+      where: {
+        id: answerAttachment.attachmentId.toString(),
+      },
+      data: {
+        answerId: answerAttachment.answerId.toString(),
+      },
+    });
+
+    return answerAttachment;
+  }
 }
