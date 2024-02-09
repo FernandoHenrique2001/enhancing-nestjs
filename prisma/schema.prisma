@@ -25,6 +25,7 @@ model User {
   questions Question[]
   answers Answer[]
   comments Comment[]
+  notifications Notification[]
 
 @@map("users")
 }
@@ -101,4 +102,17 @@ model Attachment {
   answer Answer? @relation(fields: [answerId], references: [id])
 
   @@map("attachments")
+}
+
+model Notification {
+  id String @id @default(uuid())
+  title String
+  content String
+  readAt DateTime? @map("read_at")
+  createdAt DateTime @map("created_at") @default(now())
+  recipientId String @map("recipient_id")
+
+  recipient User @relation(fields: [recipientId], references: [id])
+
+  @@map("notifications")
 }
